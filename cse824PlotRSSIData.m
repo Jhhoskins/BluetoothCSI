@@ -1,4 +1,4 @@
-function [] = cse824PlotRSSIData(Mixed, k, Dataset)
+function [RSSIStats] = cse824PlotRSSIData(Mixed, k, Dataset)
 %Mixed is RSSI Data
 %K is the number of locations that have the most RSSI observations
 %Dataset indicates if the data is from the iBeacon set or our own
@@ -6,7 +6,8 @@ function [] = cse824PlotRSSIData(Mixed, k, Dataset)
 if Dataset==1
     %sort the full matrix
     Mixed=sortrows(Mixed,1);
-
+    %Create matrix to report stats
+    RSSIStats=zeros(k,2);
     %create a matrix of just RSSI readings
     JustRSSI=table2array(Mixed(:,2:end));
 
@@ -51,7 +52,8 @@ if Dataset==1
         RSSI=RSSILOI(:, idx);
         %delete any invalid values
         RSSI(RSSI==-200)=[];
-
+        RSSIStats(j,1) = std(RSSI);
+        RSSIStats(j,2) = mean(RSSI);
         %Beacon1 = BR(:,1);
         %Beacon1(Beacon1==-200)=[];
         %generate some fake X values, since we threw out time

@@ -12,7 +12,7 @@ Mixed = readtable('iBeacon_RSSI_Labeled1.csv');
 %import estimated csi info
 
 %% Initial data plots
-cse824PlotRSSIData(Mixed, 10, 1);
+RSSIStats = cse824PlotRSSIData(Mixed, 10, 1);
 
 %% Generate signal strength model
 

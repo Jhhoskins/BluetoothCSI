@@ -1,4 +1,4 @@
-function [rssi_data] = cse824_DataPreprocess(filename, g_type)
+function [rssi_data, time_true] = cse824_DataPreprocess(filename, g_type)
 rssi_data=csvread(filename);
 
 std_rssi = std(rssi_data);
@@ -20,7 +20,7 @@ rssi_data=rssi_data./abs(mean_rssi);
 %rssi_data=rssi_data./abs(mean_rssi);
 
 %generate real time, assuming 1 reading/sec
-time = linspace(0, length(rssi_data), length(rssi_data));
+time_true = linspace(0, length(rssi_data), length(rssi_data));
 %generate fake time
 time = linspace(0, 50, length(rssi_data));
 

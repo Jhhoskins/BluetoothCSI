@@ -12,12 +12,13 @@ Mixed = readtable('iBeacon_RSSI_Labeled1.csv');
 close all
 % figure
 % hold on
-rssi_sub1=cse824_DataPreprocess('rssi_sub1.csv', 'b+');
-rssi_sub1_n=cse824_DataPreprocess('rssi_sub1_noise.csv', 'b+');
-rssi_ova1=cse824_DataPreprocess('rssi_ova1.csv', 'b+');
-rssi_ova1_n=cse824_DataPreprocess('rssi_ova1_noise.csv', 'b+');
+[rssi_sub1, time1] = cse824_DataPreprocess('rssi_sub1.csv', 'b+');
+[rssi_sub1_n, time2] = cse824_DataPreprocess('rssi_sub1_noise.csv', 'b+');
+[rssi_ova1, time3] = cse824_DataPreprocess('rssi_ova1.csv', 'b+');
+[rssi_ova1_n, time4] = cse824_DataPreprocess('rssi_ova1_noise.csv', 'b+');
 % legend('Sub 1', 'Sub 1 N', 'Ova 1', 'Ova 1 N');
 % hold off
+
 
 %import estimated csi info
 

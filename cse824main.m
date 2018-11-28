@@ -22,7 +22,6 @@ title('RSSI');
 legend('Sub 1', 'Sub 1 N', 'Ova 1', 'Ova 1 N');
  hold off
 
- 
  %% perform filtering
 MedianFilterWindow = [1/5 12/5 15/5]*5;         % NO median filtering actually smoother for phase, and may be more finegrained/precise as well. Might not be accurate
 MovingAvgWindow = [10/5 15/5 15/5]*5;           %just an array of [10 15 15]. Don't know why there's scalar mult. Doesn't seem like types are diff

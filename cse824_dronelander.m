@@ -4,6 +4,14 @@
 
 %Let's get it
 
+
+% Instructions
+% Change the filenames to be whatever the calibration data is. As long as 
+% the filenames are the same length, in theory, running dronelander in a 
+% directory with genmodel and the files should generate the model and plot 
+% the est dist vs the real dist. Note you need to set the real distances 
+% manually. Also calculates the mean error and places in the title
+
 %% generate localization model
 %define filenames for import
 filename1='rssi_cal1.csv';
@@ -48,7 +56,7 @@ c_itr = mean(c_arr);
 n_itr = mean(n_arr);
 
 % %dummy for jesse only
-% m_itr = 9.137;
+% m_itr = -9.137;
 % c_arr = -98.44;
 
 
@@ -63,12 +71,14 @@ for i=1:size(filenames,1)
    Distance = 10.^((temp_rss-c_itr)/(-m_itr));
    %get the real distance from the true distance matrix
    real_Distance = linspace(distances(i), distances(i), length(temp_rss));
-   %plot
+   real_Distance = real_Distance';
+  % error(i,:)=real_Distance - Distance;
+   mean_error(i) = mean(real_Distance - Distance);
    figure;
    hold on;
    plot(Distance, 'r');
    plot(real_Distance, 'b');
-   title(filenames(i, :))
+   title([filenames(i, :), ' Mean Error: ', mean_error ])
    xlabel('Fake Time');
    ylabel('Distance (ft)');
    hold off;

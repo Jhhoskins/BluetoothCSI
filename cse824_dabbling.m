@@ -10,6 +10,31 @@
 % pd=makedist('Nakagami', 'mu', 1.5, 'omega', 1010);
 % plot(50:1:250, pdf(pd, 50:1:250))
 
+
+%%
+sheet_names1= ['BLE1_1FT'; 'BLE1_3FT'; 'BLE1_4FT'; 'BLE1_6FT'; 'BLE1_8FT']; 
+sheet_names2= ['BLE2_1FT'; 'BLE2_3FT'; 'BLE2_4FT'; 'BLE2_6FT'; 'BLE2_8FT']; 
+sheet_names3= ['BLE3_1FT'; 'BLE3_3FT'; 'BLE3_4FT'; 'BLE3_6FT'; 'BLE3_8FT']; 
+filename = 'Datasets_Network.xlsx';
+data_arr1 = xlsread(filename, sheet_names1(4,:), 'P:P');
+data_arr2 = xlsread(filename, sheet_names1(4,:), 'H:H');
+
+%% 
+
+figure;
+hold on;
+plot(data_arr1)
+title('RSSI');
+hold off
+
+
+figure;
+hold on;
+plot(data_arr2);
+title( 'TTL');
+hold off
+
+%%
 %0=ax^2+bx+c
 a = 209.459174179830;
 b = -632.893088576470;

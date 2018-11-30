@@ -1,10 +1,7 @@
-function [m, c, n, rss_data1] = cse824_genmodel(dist1,filename1, dist2, filename2)
+function [m, c, n, rss_data1] = cse824_genmodel(dist1,rssi_data1, dist2, rssi_data2)
 
 %rssi offset value to convert rssi to rss
-offset = -45;
-%read rssi data. Assuming just 1 column, all csv, all doubles
-rssi_data1=csvread(filename1);
-rssi_data2=csvread(filename2);
+offset = 0;
 %convert to rss, assumes rssi1 and rssi2 have same bluetooth chip
 rss_data1=rssi_data1+offset;
 rss_data2=rssi_data2+offset;

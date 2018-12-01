@@ -5,7 +5,7 @@ figure;
 hold on;
 plot(rssi)
 plot(rssi_adj);
-title(['RSSI Node', num2str(nodeID), ' ', num2str(distances(i)), 'ft']);
+title(['RSSI Node', num2str(nodeID)]);%, ' ', num2str(distances(i)), 'ft']);
 legend('Old', 'New');
 xlabel('Time');
 ylabel('dBm');

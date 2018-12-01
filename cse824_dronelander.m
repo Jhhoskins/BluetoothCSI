@@ -63,19 +63,7 @@ for i=1:num_exp
 end
 
 
-%%
-% rssi_raw_cell_copy = struct2cell(rssi_raw_struct);
-% 
-% 
-% for j = 1:5
-%     
-%    adjust_rssi(rssi_raw_cell_copy, ttl_raw1, 1, j);
-%    adjust_rssi(rssi_raw_cell_copy, ttl_raw2, 2, j);
-%    adjust_rssi(rssi_raw_cell_copy, ttl_raw3, 3, j);
-%     
-%     
-%     
-% end
+
 
 %%
 
@@ -83,6 +71,35 @@ end
 %init the struct
 rss_struct = struct;
 rssi_raw_cell = struct2cell(rssi_raw_struct);
+
+%convert to cell for ease of use
+rsstemp=struct;
+rsstemp=struct2cell(rsstemp);
+
+for k=1:num_exp
+    idx1 = (k-1)*3+1;
+    idx2 = (k-1)*3+2;
+    idx3 = (k-1)*3+3;
+    rsstemp{k}=rssi_raw_cell{idx1};
+    rsstemp{k+5}=rssi_raw_cell{idx2};
+    rsstemp{k+10}=rssi_raw_cell{idx3};
+end
+rssi_raw_cell=rsstemp;
+
+
+rssi_raw_cell_copy = rssi_raw_cell;
+
+%adjust rssi by ttl
+for j = 1:5
+    
+   rssi_raw_cell{j} = adjust_rssi(rssi_raw_cell_copy{j}, ttl_raw1(:,j), 1, j,distances);
+   rssi_raw_cell{j+5} = adjust_rssi(rssi_raw_cell_copy{j+5}, ttl_raw2(:,j), 2, j,distances);
+   rssi_raw_cell{j+10} = adjust_rssi(rssi_raw_cell_copy{j+10}, ttl_raw3(:,j), 3, j,distances);
+    
+    
+    
+end
+ 
 %loop through files to get fit params for each
 for i=1:num_exp-1
     %create variables to label the rssi struct correctly
@@ -120,14 +137,28 @@ n_itr = mean(n_arr);
 
 %convert to cell for ease of use
 rss_cell = struct2cell(rss_struct);
+rsstemp=struct;
+rsstemp=struct2cell(rsstemp);
+
+for k=1:num_exp
+    idx1 = (k-1)*3+1;
+    idx2 = (k-1)*3+2;
+    idx3 = (k-1)*3+3;
+    rsstemp{k}=rss_cell{idx1};
+    rsstemp{k+5}=rss_cell{idx2};
+    rsstemp{k+10}=rss_cell{idx3};
+end
+rss_cell=rsstemp;
 dist_cell = struct;
 dist_cell = struct2cell(dist_cell);
-%% 
+
 % Distance = 10^((RSS-C)/(-m))
 ctemp=-36.5435;
 mtemp=24.0188;
-mtemp=20.8225;
-ctemp=-32.8303;
+mtemp=25.3540;
+ctemp=-33.3031;
+% mtemp=20.9208;
+% ctemp=-38.2569;
 
 for i=1:num_exp
    
@@ -252,6 +283,11 @@ fit1=polyfit(mean_dist1, distances,1);
 fit2=polyfit(mean_dist2, distances,1);
 fit3=polyfit(mean_dist3, distances,1);
 
+% 
+% fit1=polyfit(distances, mean_dist1, 3);
+% fit2=polyfit(distances, mean_dist2, 3);
+% fit3=polyfit(distances, mean_dist3, 3);
+
 
 
 for i=1:num_exp
@@ -269,15 +305,19 @@ for i=1:num_exp
    real_Distance3 = linspace(distances(i), distances(i), length(dist_cell{iterator_3}));
    real_Distance3 = real_Distance3';
 
+   mean_dist_err_1(i) = mean(distances(i)-distfit1);
+   mean_dist_err_2(i) = mean(distances(i)-distfit2);
+   mean_dist_err_3(i) = mean(distances(i)-distfit3);
+   
    figure;
    hold on;
    plot(real_Distance1, 'k');
    plot(distfit1, 'r');
    plot(distfit2, 'b');
    plot(distfit3, 'g');
-   title(['Distance Fits, Dist: ', num2str(distances(i)) ], 'Interpreter', 'none')
+   title(['DistFits, Dist: ', num2str(distances(i)), ' N1E:' num2str(mean(distances(i)-distfit1)) , ' N2E:' num2str(mean(distances(i)-distfit2)), ' N3E:' num2str(mean(distances(i)-distfit3)) ], 'Interpreter', 'none')
    legend('Real', 'Node 1', 'Node 2', 'Node 3');
-   axis([0 30 0 10]);
+   %axis([0 30 0 10]);
    xlabel('Fake Time');
    ylabel('Distance (ft)');
    hold off;
@@ -287,21 +327,6 @@ end
 
 
 
-
-   figure;
-   hold on;
-   plot(real_Distance1, 'k');
-   plot(Distance1, 'r');
-   plot(Distance2, 'b');
-   plot(Distance3, 'g');
-   title(['Mean Error1: ', num2str(mean_error1(i)), ' Mean Error2: ', num2str(mean_error2(i)) , ' Mean Error3: ', num2str(mean_error3(i)) ], 'Interpreter', 'none')
-   legend('Real', 'Node 1', 'Node 2', 'Node 3');
-   axis([0 30 0 10]);
-   xlabel('Fake Time');
-   ylabel('Distance (ft)');
-   hold off;
-
-   
    figure;
    hold on;
    plot(real_Distance1, 'k');
@@ -315,11 +340,6 @@ end
    ylabel('Distance (ft)');
    hold off;
    
-figure;
-hold on;
-plot(distfit1);
-hold off;
-
 figure;
 hold on;
 plot(rss_cell{1});
@@ -352,6 +372,7 @@ figure;
 hold on;
 plot(distances, [mean(ttl_raw1(:,1)) mean(ttl_raw1(:,2)) mean(ttl_raw1(:,3)) mean(ttl_raw1(:,4)) mean(ttl_raw1(:,5))],'+');
 title('Node 1 Mean TPL vs Dist Data')
+axis([0 30 -30 20]);
 xlabel('Distance (ft)');
 ylabel('dBm');
 hold off;
@@ -365,7 +386,7 @@ plot(rss_cell{8});
 plot(rss_cell{9});
 plot(rss_cell{10});
 title('Node 2 All Data')
-legend('1ft', '3ft', '4ft', '6ft', '7ft');
+legend('1ft', '3ft', '4ft', '6ft', '8ft');
 axis([0 30 -60 -40]);
 xlabel('Fake Time');
 ylabel('RSSI');
@@ -385,6 +406,7 @@ figure;
 hold on;
 plot(distances, mean_ttl2, '+');
 title('Node 2 Mean TPL vs Dist Data')
+axis([0 8 -30 20]);
 xlabel('Distance (ft)');
 ylabel('dBm');
 hold off;
@@ -413,10 +435,23 @@ ylabel('RSSI');
 hold off;
 
 
+
+figure;
+hold on;
+plot(mean_ttl3, [mean(rss_cell{11}) mean(rss_cell{12}) mean(rss_cell{13}) mean(rss_cell{14}) mean(rss_cell{15})], '+');
+title('Node 3 Mean RSSI vs Mean TPL')
+axis([-20 20 -60 -30]);
+ylabel('RSSI (dBm)');
+xlabel('TPL dBm');
+hold off;
+
+
+
 figure;
 hold on;
 plot(distances, mean_ttl3, '+');
 title('Node 3 Mean TPL vs Dist Data')
+axis([0 8 -30 20]);
 xlabel('Distance (ft)');
 ylabel('dBm');
 hold off;

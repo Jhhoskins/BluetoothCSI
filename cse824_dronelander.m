@@ -267,8 +267,9 @@ end
 figure; 
 hold on; 
 plot(distances, mean_error1, distances, mean_error2, distances, mean_error3); 
-title('Mean Errors'); 
+title('Mean Errors - With RSSI Correction'); 
 legend('1', '2', '3'); 
+axis([1 8 -3 4]);
 xlabel('Distance (ft)');
 ylabel('Error (ft)');
 hold off;
@@ -309,36 +310,24 @@ for i=1:num_exp
    mean_dist_err_2(i) = mean(distances(i)-distfit2);
    mean_dist_err_3(i) = mean(distances(i)-distfit3);
    
-   figure;
-   hold on;
-   plot(real_Distance1, 'k');
-   plot(distfit1, 'r');
-   plot(distfit2, 'b');
-   plot(distfit3, 'g');
-   title(['DistFits, Dist: ', num2str(distances(i)), ' N1E:' num2str(mean(distances(i)-distfit1)) , ' N2E:' num2str(mean(distances(i)-distfit2)), ' N3E:' num2str(mean(distances(i)-distfit3)) ], 'Interpreter', 'none')
-   legend('Real', 'Node 1', 'Node 2', 'Node 3');
-   %axis([0 30 0 10]);
-   xlabel('Fake Time');
-   ylabel('Distance (ft)');
-   hold off;
+%    figure;
+%    hold on;
+%    plot(real_Distance1, 'k');
+%    plot(distfit1, 'r');
+%    plot(distfit2, 'b');
+%    plot(distfit3, 'g');
+%    title(['DistFits, Dist: ', num2str(distances(i)), ' N1E:' num2str(mean(distances(i)-distfit1)) , ' N2E:' num2str(mean(distances(i)-distfit2)), ' N3E:' num2str(mean(distances(i)-distfit3)) ], 'Interpreter', 'none')
+%    legend('Real', 'Node 1', 'Node 2', 'Node 3');
+%    %axis([0 30 0 10]);
+%    xlabel('Fake Time');
+%    ylabel('Distance (ft)');
+%    hold off;
    
 end
 
 
 
 
-   figure;
-   hold on;
-   plot(real_Distance1, 'k');
-   plot(distfit1, 'r');
-   plot(distfit2, 'b');
-   plot(distfit3, 'g');
-   title('Distance Fits', 'Interpreter', 'none')
-   legend('Real', 'Node 1', 'Node 2', 'Node 3');
-   axis([0 30 0 10]);
-   xlabel('Fake Time');
-   ylabel('Distance (ft)');
-   hold off;
    
 figure;
 hold on;
@@ -348,7 +337,7 @@ plot(rss_cell{3});
 plot(rss_cell{4});
 plot(rss_cell{5});
 title('Node 1 All Data')
-legend('1ft', '3ft', '4ft', '6ft', '7ft');
+legend('1ft', '3ft', '4ft', '6ft', '8ft');
 axis([0 30 -60 -40]);
 xlabel('Fake Time');
 ylabel('RSSI');
@@ -358,7 +347,7 @@ figure;
 hold on;
 plot(distances, [mean(rss_cell{1}) mean(rss_cell{2}) mean(rss_cell{3}) mean(rss_cell{4}) mean(rss_cell{5})],'+');
 title('Node 1 Mean RSSI vs Dist Data')
-axis([0 8 -60 -40]);
+axis([0 8 -60 -30]);
 xlabel('Distance (ft)');
 ylabel('RSSI');
 hold off;
@@ -387,7 +376,7 @@ plot(rss_cell{9});
 plot(rss_cell{10});
 title('Node 2 All Data')
 legend('1ft', '3ft', '4ft', '6ft', '8ft');
-axis([0 30 -60 -40]);
+axis([0 30 -60 -30]);
 xlabel('Fake Time');
 ylabel('RSSI');
 hold off;
@@ -396,7 +385,7 @@ figure;
 hold on;
 plot(distances, [mean(rss_cell{6}) mean(rss_cell{7}) mean(rss_cell{8}) mean(rss_cell{9}) mean(rss_cell{10})],'+');
 title('Node 2 Mean RSSI vs Dist Data')
-axis([0 8 -60 -40]);
+axis([0 8 -60 -30]);
 xlabel('Distance (ft)');
 ylabel('RSSI');
 hold off;
@@ -419,8 +408,8 @@ plot(rss_cell{13});
 plot(rss_cell{14});
 plot(rss_cell{15});
 title('Node 3 All Data')
-legend('1ft', '3ft', '4ft', '6ft', '7ft');
-axis([0 30 -60 -40]);
+legend('1ft', '3ft', '4ft', '6ft', '8ft');
+axis([0 30 -60 -30]);
 xlabel('Fake Time');
 ylabel('RSSI');
 hold off;
@@ -429,7 +418,7 @@ figure;
 hold on;
 plot(distances, [mean(rss_cell{11}) mean(rss_cell{12}) mean(rss_cell{13}) mean(rss_cell{14}) mean(rss_cell{15})],'+');
 title('Node 3 Mean RSSI vs Dist Data')
-axis([0 8 -60 -40]);
+axis([0 8 -60 -30]);
 xlabel('Distance (ft)');
 ylabel('RSSI');
 hold off;
@@ -456,6 +445,35 @@ xlabel('Distance (ft)');
 ylabel('dBm');
 hold off;
 
+
+figure; 
+hold on;
+plot(distances, [mean(rss_cell{1}) mean(rss_cell{2}) mean(rss_cell{3}) mean(rss_cell{4}) mean(rss_cell{5})],'r+');
+plot(distances, [mean(rss_cell{6}) mean(rss_cell{7}) mean(rss_cell{8}) mean(rss_cell{9}) mean(rss_cell{10})],'b+');
+plot(distances, [mean(rss_cell{11}) mean(rss_cell{12}) mean(rss_cell{13}) mean(rss_cell{14}) mean(rss_cell{15})],'k+');
+title('Mean RSSI vs Distance for All Nodes');
+legend('Node 1', 'Node 2', 'Node 3');
+axis([0 8 -60 -30]);
+xlabel('Distance (ft)');
+ylabel('RSSI (dBm)')
+hold off;
+
+figure; 
+hold on;
+% plot(distances, distances, 'g+');
+% plot(distances, mean_dist1,'r+');
+% plot(distances, mean_dist2,'b+');
+% plot(distances, mean_dist2,'k+');
+plot(distances, 'g+');
+plot(mean_dist1,'r+');
+plot(mean_dist2,'b+');
+plot(mean_dist3,'k+');
+title('Mean Distance Estimated vs Distance for All Nodes');
+legend('True', 'Node 1', 'Node 2', 'Node 3');
+axis([0 5 0 10]);
+xlabel('Measurement #');
+ylabel('Distance (ft)')
+hold off;
 %%
 
 % %% generate localization model

@@ -11,10 +11,10 @@ ttl_col='H:H';
 dev_col = 'E:E';
 time_col = 'B:B';
 %change the sheet_names(1,:) to try a different experiment
-ex1_rssi = xlsread(filename, sheet_names(1,:), rssi_col);
-ex1_ttl = xlsread(filename, sheet_names(1,:), ttl_col);
-ex1_dev = xlsread(filename, sheet_names(1,:), dev_col);
-ex1_time = xlsread(filename, sheet_names(1,:), time_col);
+ex1_rssi = xlsread(filename, sheet_names(4,:), rssi_col);
+ex1_ttl = xlsread(filename, sheet_names(4,:), ttl_col);
+ex1_dev = xlsread(filename, sheet_names(4,:), dev_col);
+ex1_time = xlsread(filename, sheet_names(4,:), time_col);
 
 mtemp=25.3540;
 ctemp=-33.3031;
@@ -71,6 +71,8 @@ xlabel('Time (seconds)');
 ylabel('Y Coor');
 hold off
 
+%calculate estimated x,y
+cse824_trilateration(Distance_struct)
 %% Uncomment this section to use the older, more manual way of plotting
 % 
 % ex1 = [ex1_rssi ex1_ttl ex1_dev real_time ];

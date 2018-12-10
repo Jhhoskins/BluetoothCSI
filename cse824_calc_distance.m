@@ -14,8 +14,8 @@ ex1_node2 = ex1(ex1(:,3)==2 , :);
 ex1_node3 = ex1(ex1(:,3)==3 , :);
 %adjust for ttl 
 rssi_adj_node1 = adjust_rssi(ex1_node1(:,1), ex1_node1(:,2), 1, 1,1);
-rssi_adj_node2 = adjust_rssi(ex1_node2(:,1), ex1_node2(:,2), 1, 1,1);
-rssi_adj_node3 = adjust_rssi(ex1_node3(:,1), ex1_node3(:,2), 1, 1,1);
+rssi_adj_node2 = adjust_rssi(ex1_node2(:,1), ex1_node2(:,2), 2, 1,1);
+rssi_adj_node3 = adjust_rssi(ex1_node3(:,1), ex1_node3(:,2), 3, 1,1);
 
 Distance1 = 10.^((rssi_adj_node1-ctemp)/(-mtemp));
 Distance2 = 10.^((rssi_adj_node2-ctemp)/(-mtemp));

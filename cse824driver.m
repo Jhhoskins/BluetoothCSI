@@ -14,7 +14,7 @@
 %smoothed to account for operator movement. We realize this introduces
 %potential error into the solution and it is listed in the future work
 sheet_names= ['EX1'; 'EX2'; 'EX3'; 'EX4']; 
-filename = 'Datasets_Network.xlsx';
+filename = 'Datasets_Network';
 rssi_col = 'P:P';
 ttl_col='H:H';
 dev_col = 'E:E';
@@ -34,9 +34,14 @@ ctemp=-33.3031;
 [Distance_struct, ex1_node1, ex1_node2, ex1_node3, real_time] = cse824_calc_distance(ex1_rssi, ex1_ttl, ex1_dev , ex1_time, mtemp, ctemp);
 
 
+
 %% This section generates the "true" position as outlined in the excel sheet
-ex1_coordinates_x = zeros(length(ex1_rssi),1);
-ex1_coordinates_y = zeros(length(ex1_rssi),1);
+%hardcoded number of seconds that we need to generate data for
+data_elements = 70;
+real_time = xlsread(filename, 'Path', 'D:D');
+real_time = real_time(1:data_elements,1);
+ex1_coordinates_x = zeros(data_elements,1);
+ex1_coordinates_y = zeros(data_elements,1);
 ex1_coordinates_y(real_time<=10)=6;
 ex1_coordinates_x((real_time>=11)&(real_time<=20))=1;
 ex1_coordinates_y((real_time>=11)&(real_time<=20))=6;
@@ -73,5 +78,33 @@ xlabel('Time (seconds)');
 ylabel('Y Coor');
 hold off
 
-%calculate estimated x,y
-trilat_out=cse824_trilateration(Distance_struct)
+
+%calculate estimated x,y,z
+[est_region, errorRate] = cse824_trilateration(Distance_struct)
+disp('ErrorRate');
+disp(errorRate);
+%%
+
+x = est_region(1:data_elements,1);
+y = est_region(1:data_elements, 2);
+z = est_region(1:data_elements, 3);
+scatter3(x,y,z)
+hold on
+x_cord = xcoordf(1:data_elements,1);
+y_cord = zeros(data_elements, 1);
+z_cord = ycoordf(1:data_elements,1);
+
+
+view(-30,10)
+%apply error correction
+x_cord(:,1) = x_cord(:,1) - 6;
+
+y_cord(:,1) = y_cord(:,1) + 3.5;
+
+%calculate expirement error
+disp('X Abs error')
+disp(abs(mean(x_cord - est_region(:,1))));
+disp('Y Abs error')
+disp(abs(mean(y_cord - est_region(:,2))));
+disp('Z Abs error')
+disp(abs(mean(z_cord - est_region(:,3))));

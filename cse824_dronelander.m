@@ -62,17 +62,14 @@ for i=1:num_exp
     ttl_raw3= [ttl_raw3 ttl_temp];
     %[m_arr_1(i), c_arr_1(i), n_arr_1(i), rss_struct.(tempStr1)] = cse824_genmodel(distances(i),sheet_names1(i,:), distances(i+1), sheet_names1(i+1,:));    
 end
-%% can start running from here
-
-
+%% can start running from here if dataset is imported
 %init the struct
 rss_struct = struct;
 rssi_raw_cell = struct2cell(rssi_raw_struct);
-
 %convert to cell for ease of use
 rsstemp=struct;
 rsstemp=struct2cell(rsstemp);
-
+%this rearranges the order because of how it was read in is not easy to use
 for k=1:num_exp
     idx1 = (k-1)*3+1;
     idx2 = (k-1)*3+2;
@@ -82,22 +79,17 @@ for k=1:num_exp
     rsstemp{k+10}=rssi_raw_cell{idx3};
 end
 rssi_raw_cell=rsstemp;
-
-
 rssi_raw_cell_copy = rssi_raw_cell;
 
 %adjust rssi by ttl
 for j = 1:5
-    
    rssi_raw_cell{j} = adjust_rssi(rssi_raw_cell_copy{j}, ttl_raw1(:,j), 1, j,distances);
    rssi_raw_cell{j+5} = adjust_rssi(rssi_raw_cell_copy{j+5}, ttl_raw2(:,j), 2, j,distances);
    rssi_raw_cell{j+10} = adjust_rssi(rssi_raw_cell_copy{j+10}, ttl_raw3(:,j), 3, j,distances);
-    
-    
-    
 end
  
-%loop through files to get fit params for each
+%loop through files to get fit params for each, this is where the model
+%generation magic happens!
 for i=1:num_exp-1
     %create variables to label the rssi struct correctly
     tempStr = 'RSS';
@@ -123,20 +115,17 @@ for i=1:num_exp-1
 end
 
 %average params, iterated
+%NOTE the m_arr contains all potential m fit parameters for different
+%combinations of calibration data, same with c and n arrays
 m_itr = mean(m_arr);
 c_itr = mean(c_arr);
 n_itr = mean(n_arr);
-
-% %dummy for jesse only
-% m_itr = -9.137;
-% c_arr = -98.44;
-
 
 %convert to cell for ease of use
 rss_cell = struct2cell(rss_struct);
 rsstemp=struct;
 rsstemp=struct2cell(rsstemp);
-
+%again, rearrange for ease of use
 for k=1:num_exp
     idx1 = (k-1)*3+1;
     idx2 = (k-1)*3+2;
@@ -149,14 +138,12 @@ rss_cell=rsstemp;
 dist_cell = struct;
 dist_cell = struct2cell(dist_cell);
 
+%hardcode different fit parameters to test candidates given from the m_arr
+%and c_arr tests above
 % Distance = 10^((RSS-C)/(-m))
-ctemp=-36.5435;
-mtemp=24.0188;
 mtemp=25.3540;
 ctemp=-33.3031;
-% mtemp=20.9208;
-% ctemp=-38.2569;
-
+%calculate distances with the given model
 for i=1:num_exp
    
    iterator_1 = i;
@@ -188,7 +175,7 @@ for i=1:num_exp
    mean_error1(i) = mean(real_Distance1 - Distance1);
    mean_error2(i) = mean(real_Distance2 - Distance2);
    mean_error3(i) = mean(real_Distance3 - Distance3);
-   
+   %%uncomment figures below for all the plots
 %    figure;
 %    hold on;
 %    plot(temp_rss1, 'r');
@@ -197,7 +184,7 @@ for i=1:num_exp
 %    title([sheet_names1(i, :)], 'Interpreter', 'none')
 %    legend('1', '2', '3');
 %    axis([0 30 -60 0]);
-%    xlabel('Fake Time');
+%    xlabel('Time');
 %    ylabel('RSSI');
 %    hold off;
   
@@ -227,7 +214,7 @@ for i=1:num_exp
    title(['Mean Error1: ', num2str(mean_error1(i)), ' Mean Error2: ', num2str(mean_error2(i)) , ' Mean Error3: ', num2str(mean_error3(i)) ], 'Interpreter', 'none')
    legend('Real', 'Node 1', 'Node 2', 'Node 3');
    axis([0 30 0 10]);
-   xlabel('Fake Time');
+   xlabel('Time');
    ylabel('Distance (ft)');
    hold off;
    
@@ -271,7 +258,7 @@ xlabel('Distance (ft)');
 ylabel('Error (ft)');
 hold off;
 
-
+%we attempted some fits to see if we could do some better error correction
 fit1=polyfit(mean_error1, distances,1);
 fit2=polyfit(mean_error2, distances,1);
 fit3=polyfit(mean_error3, distances,1);
@@ -281,13 +268,8 @@ fit1=polyfit(mean_dist1, distances,1);
 fit2=polyfit(mean_dist2, distances,1);
 fit3=polyfit(mean_dist3, distances,1);
 
-% 
-% fit1=polyfit(distances, mean_dist1, 3);
-% fit2=polyfit(distances, mean_dist2, 3);
-% fit3=polyfit(distances, mean_dist3, 3);
 
-
-
+%apply the linear fits for error correction
 for i=1:num_exp
    iterator_1 = i;
    iterator_2 = num_exp+i;
@@ -336,7 +318,7 @@ plot(rss_cell{5});
 title('Node 1 All Data')
 legend('1ft', '3ft', '4ft', '6ft', '8ft');
 axis([0 30 -60 -40]);
-xlabel('Fake Time');
+xlabel('Time');
 ylabel('RSSI');
 hold off;
 
@@ -353,7 +335,6 @@ mean_ttl1=mean(ttl_raw1);
 mean_ttl2=mean(ttl_raw2);
 mean_ttl3=mean(ttl_raw3);
 
-power_watts=(10^(ttl_raw1(1,1)/10))/1000;
 figure;
 hold on;
 plot(distances, [mean(ttl_raw1(:,1)) mean(ttl_raw1(:,2)) mean(ttl_raw1(:,3)) mean(ttl_raw1(:,4)) mean(ttl_raw1(:,5))],'+');
@@ -374,7 +355,7 @@ plot(rss_cell{10});
 title('Node 2 All Data')
 legend('1ft', '3ft', '4ft', '6ft', '8ft');
 axis([0 30 -60 -30]);
-xlabel('Fake Time');
+xlabel('Time');
 ylabel('RSSI');
 hold off;
 
@@ -471,81 +452,3 @@ axis([0 5 0 10]);
 xlabel('Measurement #');
 ylabel('Distance (ft)')
 hold off;
-%%
-
-% %% generate localization model
-% %define filenames for import
-% filename1='rssi_cal1.csv';
-% filename2='rssi_cal3.csv';
-% filename3='rssi_cal4.csv';
-% filename4='rssi_cal6.csv';
-% filename5='rssi_cal8.csv';
-% 
-% filenames = [filename1; filename2; filename3; filename4; filename5];
-% 
-% % %dummy for jesse use only
-% % filenames = ['rssi_sub1.csv'; 'rssi_subN.csv'; 'rssi_ova1.csv'; 'rssi_ovaN.csv'];
-% % distances = [3 3 6 6];
-% 
-% %init the struct
-% rss_struct = struct;
-% %loop through files to get fit params for each
-% for i=1:size(filenames,1)-1
-%     %create variables to label the rssi struct correctly
-%     tempStr = 'RSS';
-%     tempNum = num2str(i);
-%     tempStr = strcat(tempStr, tempNum);
-%     [m_arr(i), c_arr(i), n_arr(i), rss_struct.(tempStr)] = cse824_genmodel(distances(i),sheet_names1(i,:), distances(i+1), sheet_names1(i+1,:));    
-% end
-% %read and add the last rssi data file to the struct
-% rssi_data1=csvread(filenames(size(filenames,1),:));
-% tempStr = 'RSS';
-% tempNum = num2str(size(filenames,1));
-% tempStr = strcat(tempStr, tempNum);
-% rss_struct.(tempStr)=rssi_data1;
-% 
-% %average params, iterated
-% m_itr = mean(m_arr);
-% c_itr = mean(c_arr);
-% n_itr = mean(n_arr);
-% 
-% % %dummy for jesse only
-% % m_itr = -9.137;
-% % c_arr = -98.44;
-% 
-% 
-% %convert to cell for ease of use
-% rss_cell = struct2cell(rss_struct);
-% % Distance = 10^((RSS-C)/(-m))
-% 
-% for i=1:size(filenames,1)
-%    
-%    temp_rss=rss_cell{i} ;
-%    %calc the estimated distance
-%    Distance = 10.^((temp_rss-c_itr)/(-m_itr));
-%    %get the real distance from the true distance matrix
-%    real_Distance = linspace(distances(i), distances(i), length(temp_rss));
-%    real_Distance = real_Distance';
-%   % error(i,:)=real_Distance - Distance;
-%    mean_error(i) = mean(real_Distance - Distance);
-%    figure;
-%    hold on;
-%    plot(Distance, 'r');
-%    plot(real_Distance, 'b');
-%    title([filenames(i, :), ' Mean Error: ', mean_error ])
-%    xlabel('Fake Time');
-%    ylabel('Distance (ft)');
-%    hold off;
-%    
-% end
-
-
-% 
-% %single shot/manual, get fit params
-% [mA, cA, nA] = cse824_genmodel(dist1,filename1, dist2, filename2);
-% [mB, cB, nB] = cse824_genmodel(dist2,filename2, dist3, filename3);
-% [mC, cC, nC] = cse824_genmodel(dist1,filename1, dist3, filename3);
-% %average params, manual
-% m=mean([mA mB mC]);
-% c=mean([cA cB cC]);
-% n=mean([nA nB nC]);

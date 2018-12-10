@@ -5,14 +5,14 @@
 %to a coresponding 1, 2, 3. Other than that, this should be plug and play.
 %You need this file, cse824_calc_distance.m, cse824_trilateration.m and adjust_rssi.m
 
-%this file reads in experiment data as specified by the "filename" and
-%sheet_names variables. It then runs through the previously generated
-%signal strength model to turn the rssi/tpl measurements from each node
-%into distance calculations. It then calls the trilateration function and
-%outputs the results. Plots of the node distances over time are outputed.
-%Note that the "actual" values are generated manually and artificially
-%smoothed to account for operator movement. We realize this introduces
-%potential error into the solution and it is listed in the future work
+% this file reads in experiment data as specified by the "filename" and
+% sheet_names variables. It then runs through the previously generated
+% signal strength model to turn the rssi/tpl measurements from each node
+% into distance calculations. It then calls the trilateration function and
+% outputs the results. Plots of the node distances over time are outputed.
+% Note that the "actual" values are generated manually and artificially
+% smoothed to account for operator movement. We realize this introduces
+% potential error into the solution and it is listed in the future work
 sheet_names= ['EX1'; 'EX2'; 'EX3'; 'EX4']; 
 filename = 'Datasets_Network';
 rssi_col = 'P:P';
@@ -53,7 +53,7 @@ ex1_coordinates_x((real_time>=41)&(real_time<=50))=-1;
 ex1_coordinates_y((real_time>=41)&(real_time<=50))=3;
 ex1_coordinates_x((real_time>=51)&(real_time<=60))=0;
 ex1_coordinates_y((real_time>=51)&(real_time<=60))=3;
-
+%filter the coordinates to better account for movement
 windowSize = 5; 
 b = (1/windowSize)*ones(1,windowSize);
 a = 1;

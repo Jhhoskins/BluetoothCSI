@@ -19,6 +19,7 @@ sheet_names1= ['BLE1_1FT'; 'BLE1_3FT'; 'BLE1_4FT'; 'BLE1_6FT'; 'BLE1_8FT'];
 sheet_names2= ['BLE2_1FT'; 'BLE2_3FT'; 'BLE2_4FT'; 'BLE2_6FT'; 'BLE2_8FT']; 
 sheet_names3= ['BLE3_1FT'; 'BLE3_3FT'; 'BLE3_4FT'; 'BLE3_6FT'; 'BLE3_8FT']; 
 filename = 'Datasets_Network.xlsx';
+
 %true distance in feet for corresponding filenames
 dist1 = 1;
 dist2 = 3;
@@ -26,9 +27,9 @@ dist3 = 4;
 dist4 = 6;
 dist5 = 8;
 distances = [dist1 dist2 dist3 dist4 dist5];
+
 %for calibration
 num_exp = length(distances);
-
 % initialize struct for raw data
 rssi_raw_struct = struct;
 % what column is rssi in
@@ -61,11 +62,7 @@ for i=1:num_exp
     ttl_raw3= [ttl_raw3 ttl_temp];
     %[m_arr_1(i), c_arr_1(i), n_arr_1(i), rss_struct.(tempStr1)] = cse824_genmodel(distances(i),sheet_names1(i,:), distances(i+1), sheet_names1(i+1,:));    
 end
-
-
-
-
-%%
+%% can start running from here
 
 
 %init the struct

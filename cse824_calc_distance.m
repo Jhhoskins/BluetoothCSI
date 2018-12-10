@@ -1,5 +1,6 @@
 function [ Distance, ex1_node1, ex1_node2, ex1_node3, real_time ] = cse824_calc_distance(ex1_rssi, ex1_ttl, ex1_dev , ex1_time, mtemp, ctemp)
 
+%extract time info from excel and transform into something useful
 time= datestr(ex1_time, 'HH:MM:SS');
 time = datetime(time);
 [h, m, s] = hms(time);
@@ -17,6 +18,7 @@ rssi_adj_node1 = adjust_rssi(ex1_node1(:,1), ex1_node1(:,2), 1, 1,1);
 rssi_adj_node2 = adjust_rssi(ex1_node2(:,1), ex1_node2(:,2), 2, 1,1);
 rssi_adj_node3 = adjust_rssi(ex1_node3(:,1), ex1_node3(:,2), 3, 1,1);
 
+%apply distance caluclation
 Distance1 = 10.^((rssi_adj_node1-ctemp)/(-mtemp));
 Distance2 = 10.^((rssi_adj_node2-ctemp)/(-mtemp));
 Distance3 = 10.^((rssi_adj_node3-ctemp)/(-mtemp));
